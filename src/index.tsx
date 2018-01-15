@@ -1,18 +1,18 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import Child from "./components/child";
 
 class Main extends React.Component<any,any>{
     /**
      *
      */
-    constructor(props: any) {        
-        debugger;
+    constructor(props: any) {                
         super(props);        
     };
 
     render(){
-        return (
-            <div><h1>Hello World !!!</h1></div>
+        return (            
+            <Child/>
         );
     };
 }
