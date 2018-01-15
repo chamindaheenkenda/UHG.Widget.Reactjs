@@ -1,0 +1,30 @@
+{
+  "name": "uhg.widget.reactjs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chamindaheenkenda/UHG.Widget.Reactjs.git"
+  },
+  "author": "Chaminda Heenkenda",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chamindaheenkenda/UHG.Widget.Reactjs/issues"
+  },
+  "homepage": "https://github.com/chamindaheenkenda/UHG.Widget.Reactjs#readme",
+  "devDependencies": {
+    "source-map-loader": "^0.2.3",
+    "ts-loader": "^3.2.0",
+    "typescript": "^2.6.2",
+    "webpack": "^3.10.0"
+  },
+  "dependencies": {
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0"
+  }
+}
