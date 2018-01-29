@@ -2,6 +2,10 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import Child from "./components/child";
 import TodoApp from "./components/TodoApp";
+import {Formio} from "react-formio";
+
+
+
 
 class Main extends React.Component<any,any>{
     /**
@@ -28,7 +32,13 @@ class Main extends React.Component<any,any>{
     }
 }
 
-ReactDOM.render(<Main/>, document.getElementById("main"));
+ReactDOM.render(
+    <Formio src="https://uhg.medebridge2.com/testhidden" />
+    , document.getElementById('main')
+  );
+  
+
+//ReactDOM.render(<Main/>, document.getElementById("main"));
 
 
   
