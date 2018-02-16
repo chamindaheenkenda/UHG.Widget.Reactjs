@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack"
+    "build": "webpack",
+    "lite": "lite-server --port 10001",
+    "start": "npm run lite"
   },
   "repository": {
     "type": "git",
@@ -18,6 +20,7 @@
   },
   "homepage": "https://github.com/chamindaheenkenda/UHG.Widget.Reactjs#readme",
   "devDependencies": {
+    "lite-server": "^2.3.0",
     "source-map-loader": "^0.2.3",
     "ts-loader": "^3.2.0",
     "typescript": "^2.6.2",
@@ -25,6 +28,8 @@
   },
   "dependencies": {
     "@types/react": "^16.0.34",
+    "axios": "^0.17.1",
+    "bootstrap": "^4.0.0",
     "create-react-class": "^15.6.2",
     "eventemitter3": "^3.0.0",
     "flux": "^3.1.3",

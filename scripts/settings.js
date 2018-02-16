@@ -1,0 +1,13 @@
+var eFormApiUrl  = 'http://localhost:64674/api/summaryresponse';
+var global_sidebarImpl = null;
+var global_mediRequest = null;
+var global_isMockView = false;
+var global_practiceObj = null;
+var global_doctorKey = null;
+var global_providerObj = null;
+var global_baseUrl = 'http://localhost:64674/api/summaryresponse';
+var global_mdVersion = null;
+var global_loadedPatientId;
+var global_loadedPatientName;
+var global_currentView;
+var global_loadedMedVersion;      
