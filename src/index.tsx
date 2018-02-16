@@ -7,15 +7,12 @@ declare var Sidebar: any;
 declare var ko: any;
 declare var patientName: any;
 
-//test
-
 class Main extends React.Component<any,any>{
 
     constructor(props: any) {                
         super(props);        
         console.log("constructor");                  
-        this.mdEventHandler = this.mdEventHandler.bind(this)
-        this.demographicRequestHandler = this.demographicRequestHandler.bind(this)
+        this.mdEventHandler = this.mdEventHandler.bind(this)        
         this.getCurrentPatientId = this.getCurrentPatientId.bind(this)
         this.state = {patientId:0, patientFirstName:'', patientSurname:''};              
     }        
@@ -37,22 +34,17 @@ class Main extends React.Component<any,any>{
 
     demographicRequestHandler(data)
     {                
-        //alert('demographicRequestHandler');        
-        //this.setState({ patientFirstName: ('FirstName' in data.Demographics) ? data.Demographics.FirstName : "" });
-        //this.setState({ patientSurname: ('Surname' in data.Demographics) ? data.Demographics.Surname : "" });
-        //alert(this.state.patientFirstName);
+        alert('demographicRequestHandler');                
     }
 
     mdEventHandler(t)
     {
         switch (t.Topic.Name) {
-            case 'hcn.md3.clinicalwindow.closed':
-                //alert('Patient closed');     
+            case 'hcn.md3.clinicalwindow.closed':                
                 this.getCurrentPatientId();           
                 break;
             case 'hcn.md3.clinicalwindow.ready':
-            case 'hcn.md3.currentpatient.changed':
-                //alert('Patient Changed');       
+            case 'hcn.md3.currentpatient.changed':                 
                 this.getCurrentPatientId();          
                 break;
         }
@@ -62,8 +54,7 @@ class Main extends React.Component<any,any>{
         return this.getCurrentPatientId() != null;
     };
 
-    getCurrentPatientId() {        
-        debugger;
+    getCurrentPatientId() {                
         try {            
             this.setState({ patientId: Sidebar.Settings.readPropertyBagValue('hcn.md3.openpatient.id') });
         } catch (error) {
@@ -72,18 +63,16 @@ class Main extends React.Component<any,any>{
         return this.state.patientId;
     }
 
-    dispose() {
+    unsubscribeSideBarApi() {
         Sidebar.Events.unsubscribe(Sidebar.Envoy.onDemographicsResponse, this.demographicRequestHandler);
         Sidebar.Events.unsubscribe(Sidebar.Esp.onMDEvent, this.mdEventHandler);        
         ko.cleanNode(document.body);
     };
 
-    initialize()
-    {        
-        debugger;    
-        console.log("initialize");        
-        $.support.cors = true;
-        debugger;
+    subscribeSideBarApi()
+    {                  
+        console.log("subscribeSideBarApi");        
+        $.support.cors = true;        
         Sidebar.Events.subscribe(Sidebar.Envoy.onPractitionerResponse, this.providerHandler);
         Sidebar.Events.subscribe(Sidebar.Envoy.onPracticeResponse, this.practiceResponse);
         Sidebar.Events.subscribe(Sidebar.Settings.onSidebarError, this.errorHandler);
@@ -107,7 +96,7 @@ class Main extends React.Component<any,any>{
         console.log("componentWillMount");
         if (("envoySend" in window.external)) {           
         }        
-        this.initialize();
+        this.subscribeSideBarApi();
     }
 
     componentDidMount(){
@@ -124,7 +113,7 @@ class Main extends React.Component<any,any>{
     
     componentWillUnmount(){
         console.log("componentWillUnmount");
-        this.dispose();
+        this.unsubscribeSideBarApi();
     }
 
     render(){
