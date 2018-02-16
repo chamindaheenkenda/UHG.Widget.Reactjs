@@ -7,6 +7,8 @@ declare var Sidebar: any;
 declare var ko: any;
 declare var patientName: any;
 
+//test
+
 class Main extends React.Component<any,any>{
 
     constructor(props: any) {                
