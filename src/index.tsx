@@ -5,9 +5,19 @@ declare var jquery: any;
 declare var $: any;
 declare var Sidebar: any;
 declare var ko: any;
+declare var patientName: any;
 
 class Main extends React.Component<any,any>{
 
+    constructor(props: any) {                
+        super(props);        
+        console.log("constructor");                  
+        this.mdEventHandler = this.mdEventHandler.bind(this)
+        this.demographicRequestHandler = this.demographicRequestHandler.bind(this)
+        this.getCurrentPatientId = this.getCurrentPatientId.bind(this)
+        this.state = {patientId:0, patientFirstName:'', patientSurname:''};              
+    }        
+    
     providerHandler()
     {
 
@@ -23,50 +33,46 @@ class Main extends React.Component<any,any>{
 
     }
 
-    demographicRequestHandler()
-    {
-
+    demographicRequestHandler(data)
+    {                
+        //alert('demographicRequestHandler');        
+        //this.setState({ patientFirstName: ('FirstName' in data.Demographics) ? data.Demographics.FirstName : "" });
+        //this.setState({ patientSurname: ('Surname' in data.Demographics) ? data.Demographics.Surname : "" });
+        //alert(this.state.patientFirstName);
     }
 
-    mdEventHandler()
+    mdEventHandler(t)
     {
-
+        switch (t.Topic.Name) {
+            case 'hcn.md3.clinicalwindow.closed':
+                //alert('Patient closed');     
+                this.getCurrentPatientId();           
+                break;
+            case 'hcn.md3.clinicalwindow.ready':
+            case 'hcn.md3.currentpatient.changed':
+                //alert('Patient Changed');       
+                this.getCurrentPatientId();          
+                break;
+        }
     }
 
-    saveDocumentBase64ResponseHandler()
-    {
-
-    }
-
-    patientOpen() {
+    patientOpen() {                     
         return this.getCurrentPatientId() != null;
     };
 
-    getCurrentPatientId() {
-        var patientId;
+    getCurrentPatientId() {        
         debugger;
-        try {
-            patientId = Sidebar.Settings.readPropertyBagValue('hcn.md3.openpatient.id');
+        try {            
+            this.setState({ patientId: Sidebar.Settings.readPropertyBagValue('hcn.md3.openpatient.id') });
         } catch (error) {
             return 0;
         }        
-
-        if (patientId === '""') {
-            return null;
-        }
-        if (patientId === "") {
-            return null;
-        }
-        //if (patientId.toString().indexOf(',') >= 0) {
-        //    patientId = substring(patientId.toString().lastIndexOf(',') + 1, patientId.length - 1);
-        //}
-        return $.trim(patientId);
+        return this.state.patientId;
     }
 
     dispose() {
         Sidebar.Events.unsubscribe(Sidebar.Envoy.onDemographicsResponse, this.demographicRequestHandler);
-        Sidebar.Events.unsubscribe(Sidebar.Esp.onMDEvent, this.mdEventHandler);
-        Sidebar.Events.unsubscribe(Sidebar.Dms.onSaveDocumentBase64Response, this.saveDocumentBase64ResponseHandler);
+        Sidebar.Events.unsubscribe(Sidebar.Esp.onMDEvent, this.mdEventHandler);        
         ko.cleanNode(document.body);
     };
 
@@ -85,8 +91,7 @@ class Main extends React.Component<any,any>{
         });
 
         Sidebar.Events.subscribe(Sidebar.Envoy.onDemographicsResponse, this.demographicRequestHandler);
-        Sidebar.Events.subscribe(Sidebar.Esp.onMDEvent, this.mdEventHandler);
-        Sidebar.Events.subscribe(Sidebar.Dms.onSaveDocumentBase64Response, this.saveDocumentBase64ResponseHandler);
+        Sidebar.Events.subscribe(Sidebar.Esp.onMDEvent, this.mdEventHandler);        
 
         if (this.patientOpen()) {
             Sidebar.Settings.sendDemographicsRequest({
@@ -95,12 +100,7 @@ class Main extends React.Component<any,any>{
             console.log(this.getCurrentPatientId());   
         }
     }
-
-    constructor(props: any) {                
-        super(props);        
-        console.log("constructor");                
-    }        
-
+    
     componentWillMount(){
         console.log("componentWillMount");
         if (("envoySend" in window.external)) {           
@@ -122,6 +122,7 @@ class Main extends React.Component<any,any>{
     
     componentWillUnmount(){
         console.log("componentWillUnmount");
+        this.dispose();
     }
 
     render(){
@@ -131,7 +132,7 @@ class Main extends React.Component<any,any>{
                     <h2>Testing MD sidebar API</h2>
                 </div>                 
                 <div> 
-                    <EFormApp/>
+                    <EFormApp patientId={this.state.patientId} patientFirstName={this.state.patientFirstName}/>
                 </div>                
             </div>
         );

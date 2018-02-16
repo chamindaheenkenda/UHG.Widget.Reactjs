@@ -5,10 +5,10 @@ import * as ReactDOM from 'react-dom';
 //import EFormAppList from '../components/eFormAppList';
 import {Formio} from "react-formio";
 
-export default class eFormApp extends React.Component<{}, {}> {
+export default class eFormApp extends React.Component<any, any> {
     //********** React Component LifeCycle **********    
 
-    constructor(props) {
+    constructor(props: any) {
         super(props);        
     }            
 
@@ -37,6 +37,8 @@ export default class eFormApp extends React.Component<{}, {}> {
         return (
             <div>            
                 <div>Form Summary</div>
+                <h1> PatientId : {this.props.patientId}</h1>  
+                <h1> PatientFirstName : {this.props.patientFirstName}</h1>  
                 <Formio src="https://uhg.medebridge2.com/testhidden" />                             
             </div>
 

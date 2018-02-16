@@ -54296,6 +54296,10 @@ var Main = /** @class */ (function (_super) {
     function Main(props) {
         var _this = _super.call(this, props) || this;
         console.log("constructor");
+        _this.mdEventHandler = _this.mdEventHandler.bind(_this);
+        _this.demographicRequestHandler = _this.demographicRequestHandler.bind(_this);
+        _this.getCurrentPatientId = _this.getCurrentPatientId.bind(_this);
+        _this.state = { patientId: 0, patientFirstName: '', patientSurname: '' };
         return _this;
     }
     Main.prototype.providerHandler = function () {
@@ -54304,40 +54308,42 @@ var Main = /** @class */ (function (_super) {
     };
     Main.prototype.errorHandler = function () {
     };
-    Main.prototype.demographicRequestHandler = function () {
+    Main.prototype.demographicRequestHandler = function (data) {
+        //alert('demographicRequestHandler');        
+        //this.setState({ patientFirstName: ('FirstName' in data.Demographics) ? data.Demographics.FirstName : "" });
+        //this.setState({ patientSurname: ('Surname' in data.Demographics) ? data.Demographics.Surname : "" });
+        //alert(this.state.patientFirstName);
     };
-    Main.prototype.mdEventHandler = function () {
-    };
-    Main.prototype.saveDocumentBase64ResponseHandler = function () {
+    Main.prototype.mdEventHandler = function (t) {
+        switch (t.Topic.Name) {
+            case 'hcn.md3.clinicalwindow.closed':
+                //alert('Patient closed');     
+                this.getCurrentPatientId();
+                break;
+            case 'hcn.md3.clinicalwindow.ready':
+            case 'hcn.md3.currentpatient.changed':
+                //alert('Patient Changed');       
+                this.getCurrentPatientId();
+                break;
+        }
     };
     Main.prototype.patientOpen = function () {
         return this.getCurrentPatientId() != null;
     };
     ;
     Main.prototype.getCurrentPatientId = function () {
-        var patientId;
         debugger;
         try {
-            patientId = Sidebar.Settings.readPropertyBagValue('hcn.md3.openpatient.id');
+            this.setState({ patientId: Sidebar.Settings.readPropertyBagValue('hcn.md3.openpatient.id') });
         }
         catch (error) {
             return 0;
         }
-        if (patientId === '""') {
-            return null;
-        }
-        if (patientId === "") {
-            return null;
-        }
-        //if (patientId.toString().indexOf(',') >= 0) {
-        //    patientId = substring(patientId.toString().lastIndexOf(',') + 1, patientId.length - 1);
-        //}
-        return $.trim(patientId);
+        return this.state.patientId;
     };
     Main.prototype.dispose = function () {
         Sidebar.Events.unsubscribe(Sidebar.Envoy.onDemographicsResponse, this.demographicRequestHandler);
         Sidebar.Events.unsubscribe(Sidebar.Esp.onMDEvent, this.mdEventHandler);
-        Sidebar.Events.unsubscribe(Sidebar.Dms.onSaveDocumentBase64Response, this.saveDocumentBase64ResponseHandler);
         ko.cleanNode(document.body);
     };
     ;
@@ -54354,7 +54360,6 @@ var Main = /** @class */ (function (_super) {
         });
         Sidebar.Events.subscribe(Sidebar.Envoy.onDemographicsResponse, this.demographicRequestHandler);
         Sidebar.Events.subscribe(Sidebar.Esp.onMDEvent, this.mdEventHandler);
-        Sidebar.Events.subscribe(Sidebar.Dms.onSaveDocumentBase64Response, this.saveDocumentBase64ResponseHandler);
         if (this.patientOpen()) {
             Sidebar.Settings.sendDemographicsRequest({
                 'PatientID': this.getCurrentPatientId()
@@ -54379,13 +54384,14 @@ var Main = /** @class */ (function (_super) {
     };
     Main.prototype.componentWillUnmount = function () {
         console.log("componentWillUnmount");
+        this.dispose();
     };
     Main.prototype.render = function () {
         return (React.createElement("div", null,
             React.createElement("div", null,
                 React.createElement("h2", null, "Testing MD sidebar API")),
             React.createElement("div", null,
-                React.createElement(eFormApp_1.default, null))));
+                React.createElement(eFormApp_1.default, { patientId: this.state.patientId, patientFirstName: this.state.patientFirstName }))));
     };
     return Main;
 }(React.Component));
@@ -65982,6 +65988,12 @@ var eFormApp = /** @class */ (function (_super) {
     eFormApp.prototype.render = function () {
         return (React.createElement("div", null,
             React.createElement("div", null, "Form Summary"),
+            React.createElement("h1", null,
+                " PatientId : ",
+                this.props.patientId),
+            React.createElement("h1", null,
+                " PatientFirstName : ",
+                this.props.patientFirstName),
             React.createElement(react_formio_1.Formio, { src: "https://uhg.medebridge2.com/testhidden" })));
     };
     return eFormApp;
